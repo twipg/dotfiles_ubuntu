@@ -166,3 +166,39 @@ alias s='peco-ssh'
 export PATH="/home/tsuyoshi/.pyenv/bin:$PATH"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
+
+### .bashrcに記述 ###
+function peco-cd {
+  local sw="1"
+  while [ "$sw" != "0" ]
+  do
+		if [ "$sw" = "1" ];then
+			local list=$(echo -e "---$PWD\n../\n$( ls -F | grep / )\n---Show hidden directory\n---Show files, $(echo $(ls -F | grep -v / ))\n---HOME DIRECTORY")
+		elif [ "$sw" = "2" ];then
+			local list=$(echo -e "---$PWD\n$( ls -a -F | grep / | sed 1d )\n---Hide hidden directory\n---Show files, $(echo $(ls -F | grep -v / ))\n---HOME DIRECTORY")
+		else
+			local list=$(echo -e "---BACK\n$( ls -F | grep -v / )")
+		fi
+
+		local slct=$(echo -e "$list" | peco )
+
+		if [ "$slct" = "---$PWD" ];then
+			local sw="0"
+		elif [ "$slct" = "---Hide hidden directory" ];then
+			local sw="1"
+		elif [ "$slct" = "---Show hidden directory" ];then
+			local sw="2"
+		elif [ "$slct" = "---Show files, $(echo $(ls -F | grep -v / ))" ];then
+			local sw=$(($sw+2))
+		elif [ "$slct" = "---HOME DIRECTORY" ];then
+			cd "$HOME"
+		elif [[ "$slct" =~ / ]];then
+			cd "$slct"
+		elif [ "$slct" = "" ];then
+			:
+		else
+			local sw=$(($sw-2))
+		fi
+  done
+}
+alias sd='peco-cd'
