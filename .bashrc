@@ -116,7 +116,10 @@ if ! shopt -oq posix; then
   fi
 fi
 
+##################################
 # peco setting history
+# command : ctrl + r
+##################################
 export HISTCONTROL="ignoredups"
 peco-history() {
   local NUM=$(history | wc -l)
@@ -126,7 +129,7 @@ peco-history() {
     history -d $((HISTCMD-1))
     echo "No history" >&2
     return
-  fi  
+  fi
 
   local CMD=$(fc -l $FIRST | sort -k 2 -k 1nr | uniq -f 1 | sort -nr | sed -E 's/^[0-9]+[[:blank:]]+//' | peco | head -n 1)
 
@@ -145,7 +148,10 @@ peco-history() {
 }
 bind -x '"\C-r":peco-history'
 
+##################################
 # peco setting ssh
+# command : s
+##################################
 function peco-ssh () {
   local selected_host=$(awk '
   tolower($1)=="host" {
@@ -162,12 +168,17 @@ function peco-ssh () {
 }
 alias s='peco-ssh'
 
-# pyenv
-export PATH="/home/tsuyoshi/.pyenv/bin:$PATH"
+##################################
+# pyenv path setting
+##################################
+export PATH="~/.pyenv/bin:$PATH"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
-### peco cd ###
+##################################
+# peco cd
+# command : sd
+##################################
 function peco-cd {
   local sw="1"
   while [ "$sw" != "0" ]
@@ -203,7 +214,9 @@ function peco-cd {
 }
 alias sd='peco-cd'
 
+##################################
 # peco ghq
+##################################
 function ghql() {
   local selected_file=$(ghq list --full-path | peco --query "$LBUFFER")
   if [ -n "$selected_file" ]; then
@@ -216,3 +229,11 @@ function ghql() {
 }
 bind -x '"\201": ghql'
 bind '"\C-g":"\201\C-m"'
+
+##################################
+# Golang ver 1.10
+# go path set
+##################################
+export GOPATH=~/go
+export PATH=$PATH:/usr/lib/go-1.10/bin
+export PATH=$PATH:$GOPATH/bin
