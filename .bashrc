@@ -214,7 +214,7 @@ eval "$(pyenv virtualenv-init -)"
 ##################################
 # pip path setting
 ##################################
-export PATH=$HOME/.local/bin/pip:$PATH
+export PATH=$HOME/.local/bin:$PATH
 
 ##################################
 # peco cd
